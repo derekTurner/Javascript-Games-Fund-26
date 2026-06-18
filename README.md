@@ -3,9 +3,9 @@
 ![logo](JGF_badge.png) 
 
 <B>These are notes in the process of updating do not use the examples may not fully work yet
-Javascript in the context of games utilising the BabylonJS framework.<B/>
+<B/>
 
-
+Typescript in the context of games utilising the BabylonJS framework.
 
 1. HTML5 CSS
    1. Module Introduction
