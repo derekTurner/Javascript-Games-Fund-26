@@ -2,7 +2,10 @@
 
 ![logo](JGF_badge.png) 
 
-Javascript in the context of games utilising the BabylonJS framework.
+<B>These are notes in the process of updating do not use the examples may not fully work yet
+Javascript in the context of games utilising the BabylonJS framework.<B/>
+
+
 
 1. HTML5 CSS
    1. Module Introduction
