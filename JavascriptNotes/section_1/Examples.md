@@ -19,7 +19,7 @@
     width="100%" 
     scrolling="no" 
     title="dateTime.html" 
-    src="25_Block_JS/section_1/dateTime.html" 
+    src="JavascriptNotes/section_1/dateTime.html" 
     frameborder="no" 
     loading="lazy" 
     allowtransparency="true" 
