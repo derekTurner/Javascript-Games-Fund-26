@@ -57,7 +57,7 @@ The index.ts file will have the job of:
 * display the scene inspector for debugging
 
 **testcard/index.ts**
-```typescript
+```javascript
 import { Engine } from "@babylonjs/core";
 import { createStartScene } from './createStartScene';
 import { ShowInspector } from "@babylonjs/inspector";
@@ -94,7 +94,7 @@ Add in createStartScene.  This has the task of:
 * Return the scene
 
 **testcard/createStartScene.ts**
-```typescript
+```javascript
 import {
     Engine,
     Scene,
@@ -205,7 +205,7 @@ Typescript also does not recognise bun so before creating the declaration files
 Now add the declaration file:
 
 **declaration.d.ts**
-```typescript
+```javascript
 declare module "*.css" {
   const content: string;
   export default content;
@@ -267,7 +267,7 @@ A restart of the container by closing and reopening VSCode will enable typescrip
 To run this in the simple way an html file server must be provided which will provide a view of the output through the code development stages.  Add server.ts to the root directory.
 
 **server.ts**
-```typescript
+```javascript
 import { file } from "bun";
 
 const PORT = 3000;
@@ -349,7 +349,7 @@ Cick on the nodes|sphere in the scene explorer and scrol down the Properties to 
 The inspector can be a valuable debugging aid, but it does makd the files bigger and slower to build.  For production builds turn the debugger off simply by commenting away the lines in index.ts:
 
 **testcard/index.ts(extract)**
-```typescript
+```javascript
 import { Engine } from "@babylonjs/core";
 import { createStartScene } from './createStartScene';
 //import { ShowInspector } from "@babylonjs/inspector";
@@ -359,7 +359,7 @@ import './main.css';
 And also
 
 **testcard/index.ts(extract)**
-```typescript
+```javascript
 eng.runRenderLoop(() => {
     startScene.render();
 });     

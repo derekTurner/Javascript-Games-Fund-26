@@ -1,14 +1,18 @@
 <!-- docs/_sidebar.md -->
 <!-- week 5 -->
 * [<b>Home</b>](/)
-* [<b>Bun</b>](/BabylonJS/1_bun/bun.md )
-
+* [Setup PC](BabylonJS/0_setup_PC/setup.md)
 * [<b>BabylonJS</b>](/BabylonJS/README.md )
-* [Setup PC](BabylonJS/1a/setupPC/setup.md)
-* [Typescript , Vite and Node on Docker](BabylonJS/section_1d_node/devEnv.md)
+* [<b>Bun</b>](/BabylonJS/1a_bun/bun.md )
+* [<b>Test Card</b>](/BabylonJS/1b_testCard/testcard.md )
+* [<b>Production</b>](/BabylonJS/1c_production/production.md )
+
+
+
+
 * [BabylonJS on Docker](BabylonJS/section_1e_node/firstBabylon.md)
 <!-- week 6 -->
-* [Changing Machine](BabylonJS/section_1f/change.md)
+
 * [Managing Vite](BabylonJS/section_1g/vite.md)
 * [Cloud development](BabylonJS/section_1h/cde.md) 
   <!-- week 6 --> 
