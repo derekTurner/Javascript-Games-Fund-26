@@ -1,13 +1,13 @@
 <!-- docs/_sidebar.md -->
 <!-- week 5 -->
 * [<b>Home</b>](/)
-* [Setup PC](BabylonJS/0_setup_PC/setup.md)
 * [<b>BabylonJS</b>](/BabylonJS/README.md )
+* [Setup PC](BabylonJS/0_setup_PC/setup.md)
 * [<b>Bun</b>](/BabylonJS/1a_bun/bun.md )
 * [<b>Test Card</b>](/BabylonJS/1b_testCard/testcard.md )
 * [<b>Production</b>](/BabylonJS/1c_production/production.md )
 
-
+* [<b>Monorepo</b>](/BabylonJS/1d_monorep/monorep.md )
 
 
 * [BabylonJS on Docker](BabylonJS/section_1e_node/firstBabylon.md)
