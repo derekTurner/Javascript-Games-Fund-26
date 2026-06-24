@@ -12,11 +12,7 @@
 
 * [BabylonJS on Docker](BabylonJS/section_1e_node/firstBabylon.md)
 <!-- week 6 -->
-
-* [Managing Vite](BabylonJS/section_1g/vite.md)
-* [Cloud development](BabylonJS/section_1h/cde.md) 
-  <!-- week 6 --> 
-* [Lighting and Shadows](BabylonJS/section_2a/lighting02.md)
+* [Lighting and Shadows](BabylonJS/2a_lighting/lighting01.md)
 * [Rotation](BabylonJS/section_2b/rotation.md)
 * [Frame Animation](BabylonJS/section_3/frames01.md)
 * [Shapes](BabylonJS/section_4/shapes01.md)

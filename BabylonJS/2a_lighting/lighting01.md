@@ -214,6 +214,8 @@ View with:
 
 **Experiment** with different values of the lighing parameters.
 
+The inspector can be switched back on in index.ts and this allows the effect of ligthing parameters to be viewed more easily than editing the code directly. 
+
 Return back to these settings which are dull so they dont mask the effects of other lights.
 
 ## Directional light
@@ -341,6 +343,25 @@ function createShadows(light: DirectionalLight, sphere: Mesh ,box: Mesh){
 }
 ```
 
+This function needs to recieve meshes as arguments so the Mesh must be imported to this module.
+
+**projects/lighting01/startScene.ts** (extract)
+```javascript
+import {
+  Engine,
+  Scene,
+  ArcRotateCamera,
+  Vector3,
+  Color3,
+  HemisphericLight,
+  DirectionalLight,
+  PointLight,
+  MeshBuilder,
+  Mesh,
+  ShadowGenerator
+} from "@babylonjs/core";
+```
+
 Make the ground recieve shadows:
 
 **projects/lighting01/startScene.ts** (extract)
@@ -386,6 +407,7 @@ import {
   HemisphericLight,
   DirectionalLight,
   MeshBuilder,
+  Mesh,
   ShadowGenerator
 } from "@babylonjs/core";
 
@@ -490,7 +512,7 @@ The shadows start to appear.
 **Experiment** with light positions colors intensities and shadow properties.
 
 
-## point lights
+## Point lights
 
 *Simulates an omnidirectional bulb radiating light in all directions from a single point.*
 
@@ -498,11 +520,9 @@ The shadows start to appear.
 | :--- | :--- | :--- | :--- |
 | **`position`** | `BABYLON.Vector3` | `(0, 0, 0)` | The precise 3D coordinate origin in world space from which the light rays emit radially outward. |
 
-Now A [pointlight] will be added.
+Now A [pointlight](https://doc.babylonjs.com/features/featuresDeepDive/lights/lights_introduction/#the-point-light) will be added.
 
 Import the PointLight.
-
-Good to here ================
 
 **projects/lighting01/startScene.ts** (extract)
 ```javascript
@@ -520,19 +540,58 @@ import {
 } from "@babylonjs/core";
 ```
 
-Add a function which will generate a pointLight.
+Add a function which will generate a pointLight.  The details of the properties and methods of [pointlight](https://doc.babylonjs.com/typedoc/classes/BABYLON.PointLight) are listed in the API
 
 **projects/lighting01/startScene.ts** (extract)
 ```javascript
 function createPointLight(scene: Scene ){
-    const light = new PointLight("light", new Vector3(0, 0, 2.5),scene);
-    light.position = new Vector3(0, 0, 2.5);
+    const light = new PointLight("light", new Vector3(-3, -3, 0.5),scene);
     light.intensity = 0.3;
     light.diffuse = new Color3(0.5, 1, 1);
     light.specular = new Color3(0.8, 1, 1);
     return light;
 }
 ```
+
+Add a call to the createPointLight function:
+
+
+**projects/lighting01/startScene.ts** (extract)
+```javascript
+export function createStartScene(engine: Engine) {
+  let myscene: Scene = new Scene(engine);
+  let box = createBox(myscene);
+  createHemisphericLight(myscene);
+  createPointLight(myscene);
+  let dl = createDirectionalLight(myscene);
+  let sphere = createSphere(myscene);
+  createGround(myscene);
+  createArcRotateCamera(myscene);
+  createShadows(dl,sphere,box)
+
+  return myscene;
+}
+```
+The result of adding this light can be seen in the reflection towards the bottom right of the sphere.
+
+Note that lights have an effect, but they do not appear as objects in a scene.  Often lighting will be associated with objects to show where they are.
+
+![point light](pointlight.png)
+
+**Experiment** with the settings of the point light.
+
+Bring the inspector pane back up and try altering the light properties.
+
+![inspectlight](inspectlight.png)
+
+### Using the Inspector
+
+Note that the current [inspector](https://doc.babylonjs.com/toolsAndResources/inspectorv2/) version is V2 and be aware that online notes or books may refer to V1.  The versions of BabylonJS keep moving on so care must always be taken to check any notes or tutorials against the current babylon documentation.
+
+There are copy icons at the side of each parameter.  These can be copied and pasted back into code.  Since bun is hot loading this can be a good route to fixing lighting.
+   
+The inspector has light and dark themes switchable from an icon above the right hand panel. A dark theme is good for checking lighting.   
+
 
 ## SpotLight
 *Simulates a conical beam of light emitting from a specific point in a constrained direction (like a flashlight).*
@@ -545,47 +604,190 @@ function createPointLight(scene: Scene ){
 | **`exponent`** | `number` | `2.0` | Controls the falloff sharpness from the bright center of the spotlight cone out to its edges (higher numbers create a sharper spotlight edge). |
 | **`innerAngle`** | `number` | `0` | Defines a sharp inner cone beam angle (in radians) where light intensity stays at 100% before starting to attenuate toward the outer `angle`. |
 
+### Radians
+
+The cone angle uses radians rather than degrees.
+
+![define radian](radian.png)
+
+There are 360 degrees in a circle and 2 pi (around 6.3) radians in a circle.
+
+1 degree = 2 pi /360 = 0.017 radian
+
+1 radian = 360 / 2 pi = 57 degrees
+
+
+To add a spotlight to the scene, first import the Spotlight.
+
+**projects/lighting01/startScene.ts** (extract)
 ```javascript
-function createPointLight(scene: Scene ){
-    const light = new PointLight("light", new Vector3(-1, 1, 0),scene);
-    light.position = new Vector3(5, 20, 10);
-    light.intensity = 0.3;
-    light.diffuse = new Color3(0.5, 1, 1);
-	light.specular = new Color3(0.8, 1, 1);
-    return light;
-}
+import {
+  Engine,
+  Scene,
+  ArcRotateCamera,
+  Vector3,
+  Color3,
+  HemisphericLight,
+  DirectionalLight,
+  PointLight,
+  SpotLight,
+  MeshBuilder,
+  Mesh,
+  ShadowGenerator
+} from "@babylonjs/core";
 ```
 
-For the [point light](https://doc.babylonjs.com/typedoc/classes/BABYLON.PointLight), the location of the light is defined by a vector, but there is no directivity.  The position can also be manipulated by the light.poition.  A point light is capable of casting a shadow.
+Then add a function which will add a spotlight to the scene.
 
-```javascript
-    function createDirectionalLight(scene: Scene ){
-    const light = new DirectionalLight("light", new Vector3(0.2, -1, 0.2),scene);
-    light.position = new Vector3(20, 40, 20);
-    light.intensity = 0.7;
-    light.diffuse = new Color3(1, 0, 0);
-	light.specular = new Color3(0, 1, 0);
-    return light;
-}
-```
+The value of pi is represented by Math.PI a value of PI/3 is 1/6th of a circle 60 degrees.
 
-The [directional light](https://doc.babylonjs.com/typedoc/classes/BABYLON.DirectionalLight) casts in the direction of the vector3 and its position is manipulated by light.position. A directional light is capable of casting a shadow.
-
+**projects/lighting01/startScene.ts** (extract)
 ```javascript
 function createSpotLight(scene: Scene ){
-    const light = new SpotLight("light", new Vector3(1, 5, -3), 
-        new Vector3(0, -1, 0), Math.PI / 3, 20, scene);
-    light.intensity = 0.5;
+    const light = new SpotLight("light", new Vector3(2, 1, -3), 
+        new Vector3(0, -2, 3), Math.PI / 3, 20, scene);
+    light.intensity = 1.0;
     light.diffuse = new Color3(1, 0, 0);
-	light.specular = new Color3(0, 1, 0);
+    light.specular = new Color3(0, 1, 0);
     return light;
 }
 ```
 
-The [spotlight](https://doc.babylonjs.com/typedoc/classes/BABYLON.SpotLight) sets the position with a vector and the direction with a second vector. The angle sets the angle of the cone in radians.  The exponent number determines the rate of fall off of light intensity.
+Now add a call to this to add a light to the scene.
 
-
+**projects/lighting01/startScene.ts** (extract)
 ```javascript
+export function createStartScene(engine: Engine) {
+  let myscene: Scene = new Scene(engine);
+  let box = createBox(myscene);
+  createHemisphericLight(myscene);
+  createPointLight(myscene);
+  createSpotLight(myscene);
+  let dl = createDirectionalLight(myscene);
+  let sphere = createSphere(myscene);
+  createGround(myscene);
+  createArcRotateCamera(myscene);
+  createShadows(dl,sphere,box)
+
+  return myscene;
+}
+```
+View the output
+
+![spot light](spotlight.png)
+
+**Experiment** with moving the spotlight and creating shadows from it.
+
+## Ground
+
+When the camera is moved to view the ground from below it becomes invisible the back face of the ground plane is transparent.  The back face has been culled.
+
+This can be improved by using a standard material for the ground and setting the backface culling to false.
+
+So we need to import the StandardMaterial.
+
+**projects/lighting01/startScene.ts** (extract)
+```javascript
+import {
+  Engine,
+  Scene,
+  ArcRotateCamera,
+  Vector3,
+  Color3,
+  HemisphericLight,
+  DirectionalLight,
+  PointLight,
+  SpotLight,
+  MeshBuilder,
+  Mesh,
+  StandardMaterial,
+  ShadowGenerator
+} from "@babylonjs/core";
+```
+
+Then update the createGrouond function.
+
+**projects/lighting01/startScene.ts** (extract)
+```javascript
+function createGround(scene: Scene){
+    let ground = MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
+    var groundMaterial = new StandardMaterial("groundMaterial", scene);
+    groundMaterial.backFaceCulling = false;
+    ground.material = groundMaterial;
+    ground.receiveShadows = true;
+    return ground;
+}
+```
+
+Now view again and move the camera below ground to see the effect.
+
+![below ground](belowground.png)
+
+The full listing at this point is:
+
+**projects/lighting01/startScene.ts** (full)
+```javascript
+import {
+  Engine,
+  Scene,
+  ArcRotateCamera,
+  Vector3,
+  Color3,
+  HemisphericLight,
+  DirectionalLight,
+  PointLight,
+  SpotLight,
+  MeshBuilder,
+  Mesh,
+  StandardMaterial,
+  ShadowGenerator
+} from "@babylonjs/core";
+
+function createBox(scene: Scene) {
+  let box = MeshBuilder.CreateBox("box", { size: 1 }, scene);
+  box.position.y = 3;
+  return box;
+}
+
+function createHemisphericLight(scene: Scene) {
+  const light: HemisphericLight = new HemisphericLight(
+    "light",
+    new Vector3(0, 1, 0),
+    scene,
+  );
+  light.intensity = 0.3;
+  light.diffuse = new Color3(1, 0, 0);
+  light.specular = new Color3(0, 1, 0);
+  light.groundColor = new Color3(0, 1, 0);
+  return light;
+}
+
+function createDirectionalLight(scene: Scene) {
+  const light = new DirectionalLight("light", new Vector3(0.2, -1, 0.2), scene);
+  light.position = new Vector3(20, 40, 10);
+  light.intensity = 0.5;
+  light.diffuse = new Color3(0, 0.6, 0.5);
+  light.specular = new Color3(0, 0.7, 0.3);
+  return light;
+}
+
+function createPointLight(scene: Scene ){
+    const light = new PointLight("light", new Vector3(-3, -3, 0.5),scene);
+    light.intensity = 0.3;
+    light.diffuse = new Color3(0.5, 1, 1);
+    light.specular = new Color3(0.8, 1, 1);
+    return light;
+}
+
+function createSpotLight(scene: Scene ){
+    const light = new SpotLight("light", new Vector3(2, 1, -3), 
+        new Vector3(0, -2, 3), Math.PI / 3, 20, scene);
+    light.intensity = 1.0;
+    light.diffuse = new Color3(1, 0, 0);
+    light.specular = new Color3(0, 1, 0);
+    return light;
+}
+
 function createShadows(light: DirectionalLight, sphere: Mesh ,box: Mesh){
     const shadower = new ShadowGenerator(1024, light);
     const sm : any = shadower.getShadowMap();
@@ -600,15 +802,17 @@ function createShadows(light: DirectionalLight, sphere: Mesh ,box: Mesh){
     shadower.bias = 0;
     return shadower;
 }
-```
 
-In order to create shadows, a [shadow generator](https://doc.babylonjs.com/typedoc/classes/BABYLON.ShadowGenerator) must be created.  This is used to create a shadow map.  
+function createSphere(scene: Scene) {
+  let sphere = MeshBuilder.CreateSphere(
+    "sphere",
+    { diameter: 2, segments: 32 },
+    scene,
+  );
+  sphere.position.y = 1;
+  return sphere;
+}
 
-The render list determines which elements in the scene will ge allocated to shadowing.  It can save CPU to not shadow absolutely everything.
-
-The nature of the shadow in terms of detail and blur can be controloled by parameters.
-
-```javascript
 function createGround(scene: Scene){
     let ground = MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
     var groundMaterial = new StandardMaterial("groundMaterial", scene);
@@ -617,68 +821,120 @@ function createGround(scene: Scene){
     ground.receiveShadows = true;
     return ground;
 }
+
+function createArcRotateCamera(scene: Scene) {
+  let camAlpha = -Math.PI / 2,
+    camBeta = Math.PI / 2.5,
+    camDist = 10,
+    camTarget = new Vector3(0, 0, 0);
+  let camera = new ArcRotateCamera(
+    "camera1",
+    camAlpha,
+    camBeta,
+    camDist,
+    camTarget,
+    scene,
+  );
+  camera.attachControl(true);
+  return camera;
+}
+
+export function createStartScene(engine: Engine) {
+  let myscene: Scene = new Scene(engine);
+  let box = createBox(myscene);
+  createHemisphericLight(myscene);
+  createPointLight(myscene);
+  createSpotLight(myscene);
+  let dl = createDirectionalLight(myscene);
+  let sphere = createSphere(myscene);
+  createGround(myscene);
+  createArcRotateCamera(myscene);
+  createShadows(dl,sphere,box)
+
+  return myscene;
+}
+
 ```
 
-In order to cast shadows on the ground it must be set to recieveShadows.
 
-The backFaceCulling feature allows the camera to look below the ground and see a face.  By default the ground is transparent when viewed from below.
+## Final Polish
 
-Following the pattern set previously the elements in the scene will all be listed in the SceneData interface and implemented in the object which I have named ``that`` which is returned from the function.
+To finish off I will just tweak the image.
 
-The full listing is then
+* The locations of the sphere and the box are adjusted.
+  * Note that the ground is not placed at y=0.5 as it's face would intersect witht the ground plane creating an odd effect when viewed from below.  Instead add a small ammount of offset y = 0.501.
 
-**babylonProj/lighting02/src/createStartScene.ts**
+* Change the color, intensity and direction of the directional light.
+
+* change the intensity and position of the point light.
+
+With those small changes the final image is much more interesting.
+
+The final listing is now:
+
+The full listing at this point is:
+
+**projects/lighting01/startScene.ts** (full final)
 ```javascript
-// import "@babylonjs/core/Debug/debugLayer";
-// import "@babylonjs/inspector";
-import { Scene, ArcRotateCamera, Vector3,
-         MeshBuilder, Mesh,
-         StandardMaterial,
-         HemisphericLight, PointLight, SpotLight, DirectionalLight, Color3,
-         Camera,
-         ShadowGenerator,
-         Engine} from "@babylonjs/core";
+import {
+  Engine,
+  Scene,
+  ArcRotateCamera,
+  Vector3,
+  Color3,
+  HemisphericLight,
+  DirectionalLight,
+  PointLight,
+  SpotLight,
+  MeshBuilder,
+  Mesh,
+  StandardMaterial,
+  ShadowGenerator
+} from "@babylonjs/core";
 
-function createBox(scene: Scene ){
-    let box = MeshBuilder.CreateBox("box",{size: 1}, scene);
-    box.position.y = 3;
-    box.position.y = 0.51;
-    return box;
+function createBox(scene: Scene) {
+  let box = MeshBuilder.CreateBox("box", { size: 1 }, scene);
+  box.position.y = 0.0;
+  box.position.y = 0.501
+  return box;
 }
-    
+
+function createHemisphericLight(scene: Scene) {
+  const light: HemisphericLight = new HemisphericLight(
+    "light",
+    new Vector3(0, 1, 0),
+    scene,
+  );
+  light.intensity = 0.3;
+  light.diffuse = new Color3(1, 0, 0);
+  light.specular = new Color3(0, 1, 0);
+  light.groundColor = new Color3(0, 1, 0);
+  return light;
+}
+
+function createDirectionalLight(scene: Scene) {
+  const light = new DirectionalLight("light", new Vector3(0.5, -0.5, 0.2), scene);
+  light.position = new Vector3(20, 40, 10);
+  light.intensity = 0.7;
+  light.diffuse = new Color3(0.6, 0, 0);
+  light.specular = new Color3(0, 0.7, 0.3);
+  return light;
+}
+
 function createPointLight(scene: Scene ){
-    const light = new PointLight("light", new Vector3(-1, 1, 0),scene);
-    light.position = new Vector3(5, 20, 10);
-    light.intensity = 0.3;
+    const light = new PointLight("light", new Vector3(-2.5, 0.2, 0.5),scene);
+    light.intensity = 0.5;
     light.diffuse = new Color3(0.5, 1, 1);
-	light.specular = new Color3(0.8, 1, 1);
-    return light;
-}
-
-function createDirectionalLight(scene: Scene ){
-    const light = new DirectionalLight("light", new Vector3(0.2, -1, 0.2),scene);
-    light.position = new Vector3(20, 40, 20);
-    light.intensity = 0.7;
-    light.diffuse = new Color3(1, 0, 0);
-	light.specular = new Color3(0, 1, 0);
+    light.specular = new Color3(0.8, 1, 1);
     return light;
 }
 
 function createSpotLight(scene: Scene ){
-    const light = new SpotLight("light", new Vector3(1, 5, -3), 
-        new Vector3(0, -1, 0), Math.PI / 3, 20, scene);
-    light.intensity = 0.5;
+    const light = new SpotLight("light", new Vector3(2, 1, -3), 
+        new Vector3(0, -2, 3), Math.PI / 3, 20, scene);
+    light.intensity = 1.0;
     light.diffuse = new Color3(1, 0, 0);
-	light.specular = new Color3(0, 1, 0);
-    return light;
-}
-   
-function createHemisphericLight(scene: Scene ){
-    const light:HemisphericLight = new HemisphericLight("light", new Vector3(1, 10, 0),scene);
-    light.intensity = 0.3;
-    light.diffuse = new Color3(1, 0, 0);
-	light.specular = new Color3(0, 1, 0);
-	light.groundColor = new Color3(0, 1, 0);
+    light.specular = new Color3(0, 1, 0);
     return light;
 }
 
@@ -697,12 +953,16 @@ function createShadows(light: DirectionalLight, sphere: Mesh ,box: Mesh){
     return shadower;
 }
 
-function createSphere(scene: Scene){
-    let sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2, segments: 32 }, scene);
-    sphere.position.y = 1.5;
-    return sphere;
+function createSphere(scene: Scene) {
+  let sphere = MeshBuilder.CreateSphere(
+    "sphere",
+    { diameter: 2, segments: 32 },
+    scene,
+  );
+  sphere.position.y = 2;
+  return sphere;
 }
-   
+
 function createGround(scene: Scene){
     let ground = MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
     var groundMaterial = new StandardMaterial("groundMaterial", scene);
@@ -712,63 +972,41 @@ function createGround(scene: Scene){
     return ground;
 }
 
-function createArcRotateCamera(scene: Scene){
-    let camAlpha = -Math.PI / 2,
-    camBeta  =  Math.PI / 2.5,
-    camDist  =  10,
-    camTarget = new Vector3(0, 0, 0); 
-    let camera = new ArcRotateCamera("camera1", camAlpha, camBeta, camDist, camTarget, scene);
-    camera.attachControl(true);
-    return camera;
+function createArcRotateCamera(scene: Scene) {
+  let camAlpha = -Math.PI / 2,
+    camBeta = Math.PI / 2.5,
+    camDist = 10,
+    camTarget = new Vector3(0, 0, 0);
+  let camera = new ArcRotateCamera(
+    "camera1",
+    camAlpha,
+    camBeta,
+    camDist,
+    camTarget,
+    scene,
+  );
+  camera.attachControl(true);
+  return camera;
 }
 
-export default function createStartScene(engine:Engine) {
-    interface SceneData {
-        scene:Scene,
-        box?: Mesh,
-        lightBulb?: PointLight,
-        lightDirectional?: DirectionalLight,
-        lightSpot?: SpotLight,
-        lightHemispheric?: HemisphericLight,
-        sphere?: Mesh,
-        ground?: Mesh,
-        camera?:Camera,
-        shadowGenerator?: ShadowGenerator
-    };
+export function createStartScene(engine: Engine) {
+  let myscene: Scene = new Scene(engine);
+  let box = createBox(myscene);
+  createHemisphericLight(myscene);
+  createPointLight(myscene);
+  createSpotLight(myscene);
+  let dl = createDirectionalLight(myscene);
+  let sphere = createSphere(myscene);
+  createGround(myscene);
+  createArcRotateCamera(myscene);
+  createShadows(dl,sphere,box)
 
-    let that:SceneData = {scene:new Scene(engine)};
-    // that.scene.debugLayer.show();
-
-    that.box = createBox(that.scene);
-    that.lightBulb = createPointLight(that.scene);
-    that.lightDirectional = createDirectionalLight(that.scene);
-    that.lightSpot = createSpotLight(that.scene);
-    that.lightHemispheric = createHemisphericLight(that.scene);
-    that.sphere = createSphere(that.scene);
-    that.ground = createGround(that.scene);
-    that.camera = createArcRotateCamera(that.scene);
-    that.shadowGenerator = createShadows(that.lightDirectional,that.sphere,that.box)
-    return that;
+  return myscene;
 }
+
 ```
 
-> npm run dev
+Now the final view is
 
-The resulting scene will then appear in the browser.
+![lighting01](lighting01.png)
 
-![scene](images/scene.png)
-
-And finally it is running here!
-
-<iframe 
-    height="480" 
-    width="600" 
-    scrolling="no" 
-    title="Lighting and Shadow" 
-    src="BabylonJS/section_2a/dist_2a/index.html" 
-    style="border:10;border-style: solid;
-    border-color: red;" 
-    loading="lazy" 
-    allowtransparency="true" 
-    allowfullscreen="true">
-</iframe>
