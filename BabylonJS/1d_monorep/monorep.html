@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Derek Turner">
+
+<title>Bun Monorepo</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="monorep_files/libs/clipboard/clipboard.min.js"></script>
+<script src="monorep_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="monorep_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="monorep_files/libs/quarto-html/popper.min.js"></script>
+<script src="monorep_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="monorep_files/libs/quarto-html/anchor.min.js"></script>
+<link href="monorep_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="monorep_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="monorep_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="monorep_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="monorep_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#monorepo" id="toc-monorepo" class="nav-link active" data-scroll-target="#monorepo"><span class="header-section-number">1</span> Monorepo</a>
+  <ul class="collapse">
+  <li><a href="#single-branch" id="toc-single-branch" class="nav-link" data-scroll-target="#single-branch"><span class="header-section-number">1.1</span> single branch</a></li>
+  <li><a href="#development-branch" id="toc-development-branch" class="nav-link" data-scroll-target="#development-branch"><span class="header-section-number">1.2</span> development branch</a></li>
+  </ul></li>
+  <li><a href="#changing-structure" id="toc-changing-structure" class="nav-link" data-scroll-target="#changing-structure"><span class="header-section-number">2</span> Changing structure</a>
+  <ul class="collapse">
+  <li><a href="#check-build" id="toc-check-build" class="nav-link" data-scroll-target="#check-build"><span class="header-section-number">2.1</span> Check build</a></li>
+  <li><a href="#update-to-main" id="toc-update-to-main" class="nav-link" data-scroll-target="#update-to-main"><span class="header-section-number">2.2</span> Update to main</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Bun Monorepo</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Derek Turner </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="monorepo" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Monorepo</h1>
+<p>The folder structure developed and tested for the testcard 3D scene is appropriate to developing a single project.</p>
+<p>What is required at the moment is the ability to make several small projects in which the various aspects of BabylonJS cand be tested. For that purpose the structure of the folder should be changed to a format named Monorepo. The name is not intuitive!</p>
+<p>At the moment the repository named BabylonJS has a main branch which is operating. You might want to come back to this in future if you want to develop a single larger BabylonJS project so by adding a branch named single to the repository this state can be preserved and is easy to restore.</p>
+<section id="single-branch" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="single-branch"><span class="header-section-number">1.1</span> single branch</h2>
+<p>Open github desktop with BabylonJSBun26 as the current repository and open the current branch tag.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="currentbranch.png" class="img-fluid figure-img"></p>
+<figcaption>current_branch</figcaption>
+</figure>
+</div>
+<p>Click “New branch” to create a new branch named single.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="newbranch.png" class="img-fluid figure-img"></p>
+<figcaption>new branch</figcaption>
+</figure>
+</div>
+<p>This will automatically copy the current state of the main branch into the new branch when “create branch” is selected.</p>
+<p>The branch now exists on your local machine and needs to be published to exist on github.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="publish.png" class="img-fluid figure-img"></p>
+<figcaption>publish branch</figcaption>
+</figure>
+</div>
+<p>Note that Current branch shows single so with this selected when you show the branch in explorer only the few files which have already been created will be visible. Any editing you do in visual studio code will only apply to this branch.</p>
+<p>This branch is effectively being left as a restore position so it should not be edited. Return the current branch to main by clicking on main under the current branch tag.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="switchtomain.png" class="img-fluid figure-img"></p>
+<figcaption>swithch to main</figcaption>
+</figure>
+</div>
+</section>
+<section id="development-branch" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="development-branch"><span class="header-section-number">1.2</span> development branch</h2>
+<p>The next stage of editing could be applied to the main branch, however main currently works and we are likely to break it at some point during the editng towards the next stage.</p>
+<p>The solution is to make another branch named development which starts out as a copy of main. In the process of the next stage of editing we may pause, leaving development as a non-operational work in progress secure in the knowlege that the working code in main is not being spoiled.</p>
+<p>When the code in development is complete tested and working it can be copied back to main and this becomes the next milestone.</p>
+<p>The process to make the development branch is the same as making the single branch, but you now have a choice which branch to base it on.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="choice.png" class="img-fluid figure-img"></p>
+<figcaption>branch choice</figcaption>
+</figure>
+</div>
+<p>Publish the development branch to github.</p>
+<p>Open the development branch in visual studio code.</p>
+<p>The footer in VSCode shows that the docker container is open and that the correct branch is open.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="footer.png" class="img-fluid figure-img"></p>
+<figcaption>vsc footer</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="changing-structure" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Changing structure</h1>
+<p>The endpoint for this section will be to be able to run two versions of testcard, one with the cube above the sphere and one with the sphere above the cube as evidence that the structure is set up to run multiple small projects.</p>
+<p>The structure of the <strong>Monorepo / Multi-project workspace</strong> will move towards</p>
+<pre class="text"><code>my-bun-workspace/
+├── node_modules/          # Single, shared node_modules for tooling &amp; common packages
+├── projects/              # A folder containing all your separate test cards
+│   ├── testcard1/
+│   │   ├── public
+│   │   ├── createStartScene.ts
+│   │   ├── index.html
+│   │   ├── index.ts
+│   │   └── main.css
+│   ├── testcard1/
+│   │   ├── public
+│   │   ├── createStartScene.ts
+│   │   ├── index.html
+│   │   ├── index.ts
+│   │   └── main.css
+├── .gitignore             # Single gitignore for the repository
+.gitattributes             # normalizing line feeds
+├── bun.lock               # Single lockfile for dependencies
+├── declaration.d.ts       # Single typescript declaration file
+├── package.json           # Root package.json for the Bun workspace
+├── server.ts              # Server for all files in the structure
+└── tsconfig.json          # Root TypeScript configuration</code></pre>
+<ul>
+<li>Move tsconfig.json from testcard to the root of the structure.</li>
+</ul>
+<p>Note the include section in tsconfig.json</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="er">"include":</span> <span class="ot">[</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"**/*.ts"</span><span class="ot">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"**/*.tsx"</span><span class="ot">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"declarations.d.ts"</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The ** refers to all nested folders so it does not need to be modified when tsconfig.json is moved to the root.</p>
+<p>In the compiler options add “DOM” to the lib environment setup.</p>
+<p><strong>tsconfig.json</strong> (extract)</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="er">"compilerOptions":</span> <span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="er">//</span> <span class="er">Environment</span> <span class="er">setup</span> <span class="er">&amp;</span> <span class="er">latest</span> <span class="er">features</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"lib"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"ESNext"</span><span class="ot">,</span> <span class="st">"DOM"</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"ESNext"</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"module"</span><span class="fu">:</span> <span class="st">"Preserve"</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"moduleDetection"</span><span class="fu">:</span> <span class="st">"force"</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"jsx"</span><span class="fu">:</span> <span class="st">"react-jsx"</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"allowJs"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"types"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"bun"</span><span class="ot">]</span><span class="fu">,</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Delete redundant files and folders from the testcard folder.</li>
+</ul>
+<p>Within the tescard folder delete files</p>
+<pre><code>* .gitnore
+* bun.lock
+* package.json
+* README.md</code></pre>
+<p>and folder</p>
+<pre><code>* node_modules</code></pre>
+<ul>
+<li>Copy testcard (right click copy) and paste it back to the root of the structure to create testcard copy.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="copy.png" class="img-fluid figure-img"></p>
+<figcaption>copy testcard</figcaption>
+</figure>
+</div>
+<p>Dont worry about typescript errors at this stage.</p>
+<ul>
+<li><p>Rename folders to testcard1 and testcard2</p></li>
+<li><p>Create a projects folder in the root of the structure and drag the testcard folders into it.</p></li>
+<li><p>Open testcard1/index.html and change the base from testcard to projects/testcard1.</p></li>
+</ul>
+<p><strong>testcard1/index.html</strong></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!DOCTYPE</span> html<span class="dt">&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="dt">&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">base</span><span class="ot"> href</span><span class="op">=</span><span class="st">"/projects/testcard1/"</span><span class="dt">&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">meta</span><span class="ot"> charset</span><span class="op">=</span><span class="st">"UTF-8"</span><span class="dt">&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">title</span><span class="dt">&gt;</span>Testcard<span class="dt">&lt;/</span><span class="kw">title</span><span class="dt">&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span> <span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"3d"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span> <span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> type=</span><span class="st">"module"</span><span class="ot"> src</span><span class="op">=</span><span class="st">"./index.ts"</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><p>Open testcard2/index.html and change the base from testcard to projects/testcard2.</p></li>
+<li><p>Edit testcard2/createStartScene.ts</p></li>
+</ul>
+<p>Flip the y position of the sphere and the box so that the box,position y = 1 and the sphere.position.y = 3</p>
+<p><strong>testcard2/createStartScene.ts</strong> (extract)</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">createBox</span>(scene<span class="op">:</span> Scene) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> box <span class="op">=</span> MeshBuilder<span class="op">.</span><span class="fu">CreateBox</span>(<span class="st">"box"</span><span class="op">,</span>{<span class="dt">size</span><span class="op">:</span> <span class="dv">1</span>}<span class="op">,</span> scene)<span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    box<span class="op">.</span><span class="at">position</span><span class="op">.</span><span class="at">y</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> box<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">createSphere</span>(scene<span class="op">:</span> Scene) {</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> sphere <span class="op">=</span> MeshBuilder<span class="op">.</span><span class="fu">CreateSphere</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sphere"</span><span class="op">,</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      { <span class="dt">diameter</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span> <span class="dt">segments</span><span class="op">:</span> <span class="dv">32</span> }<span class="op">,</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      scene<span class="op">,</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    sphere<span class="op">.</span><span class="at">position</span><span class="op">.</span><span class="at">y</span> <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sphere<span class="op">;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Edit server.ts so that it serves by default testcard1 and also defaults to serving index.html if the path ends with /.</p>
+<p><strong>server.ts</strong> (extract)</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Bun<span class="op">.</span><span class="fu">serve</span>({</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">port</span><span class="op">:</span> PORT<span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">async</span> <span class="fu">fetch</span>(req) {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> url <span class="op">=</span> <span class="kw">new</span> <span class="fu">URL</span>(req<span class="op">.</span><span class="at">url</span>)<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> path <span class="op">=</span> url<span class="op">.</span><span class="at">pathname</span><span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (path <span class="op">===</span> <span class="st">"/"</span>) {</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        path <span class="op">=</span> <span class="st">"/projects/testcard1/index.html"</span><span class="op">;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (path<span class="op">.</span><span class="fu">endsWith</span>(<span class="st">"/"</span>)) {</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Serve index.html for directory requests</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        path <span class="op">=</span> path <span class="op">+</span> <span class="st">"index.html"</span><span class="op">;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> filePath <span class="op">=</span> <span class="vs">`.</span><span class="sc">${</span>path<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> targetFile <span class="op">=</span> <span class="fu">file</span>(filePath)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>A further tweak is to add a ! to the line</li>
+</ul>
+<p><strong>server.ts</strong> (extract)</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> transpiled <span class="op">=</span> <span class="cf">await</span> result<span class="op">.</span><span class="at">outputs</span>[<span class="dv">0</span>]<span class="op">!.</span><span class="fu">text</span>()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The purpose of the ! is to say that you the programmer confirm that result.outputs[0] exists. Otherwise typescript throws up a warning that it may not exist.</p>
+<p>OK for clarity here is the full listing of server.ts</p>
+<p><strong>server.ts</strong> (full)</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { file } <span class="im">from</span> <span class="st">"bun"</span><span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> PORT <span class="op">=</span> <span class="dv">3000</span><span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">// MIME type mapping</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> mimeTypes<span class="op">:</span> Record<span class="op">&lt;</span>string<span class="op">,</span> string<span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">".ts"</span><span class="op">:</span> <span class="st">"application/javascript"</span><span class="op">,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">".js"</span><span class="op">:</span> <span class="st">"application/javascript"</span><span class="op">,</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">".json"</span><span class="op">:</span> <span class="st">"application/json"</span><span class="op">,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">".html"</span><span class="op">:</span> <span class="st">"text/html"</span><span class="op">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">".css"</span><span class="op">:</span> <span class="st">"text/css"</span><span class="op">,</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">".png"</span><span class="op">:</span> <span class="st">"image/png"</span><span class="op">,</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">".jpg"</span><span class="op">:</span> <span class="st">"image/jpeg"</span><span class="op">,</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">".gif"</span><span class="op">:</span> <span class="st">"image/gif"</span><span class="op">,</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">".svg"</span><span class="op">:</span> <span class="st">"image/svg+xml"</span><span class="op">,</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>Bun<span class="op">.</span><span class="fu">serve</span>({</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="dt">port</span><span class="op">:</span> PORT<span class="op">,</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">async</span> <span class="fu">fetch</span>(req) {</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> url <span class="op">=</span> <span class="kw">new</span> <span class="fu">URL</span>(req<span class="op">.</span><span class="at">url</span>)<span class="op">;</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> path <span class="op">=</span> url<span class="op">.</span><span class="at">pathname</span><span class="op">;</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (path <span class="op">===</span> <span class="st">"/"</span>) {</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        path <span class="op">=</span> <span class="st">"/projects/testcard1/index.html"</span><span class="op">;</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (path<span class="op">.</span><span class="fu">endsWith</span>(<span class="st">"/"</span>)) {</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Serve index.html for directory requests</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        path <span class="op">=</span> path <span class="op">+</span> <span class="st">"index.html"</span><span class="op">;</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> filePath <span class="op">=</span> <span class="vs">`.</span><span class="sc">${</span>path<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> targetFile <span class="op">=</span> <span class="fu">file</span>(filePath)<span class="op">;</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="cf">await</span> targetFile<span class="op">.</span><span class="fu">exists</span>()) {</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Get file extension</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> ext <span class="op">=</span> path<span class="op">.</span><span class="fu">substring</span>(path<span class="op">.</span><span class="fu">lastIndexOf</span>(<span class="st">"."</span>))<span class="op">;</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Handle TypeScript transpilation for browser modules</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (ext <span class="op">===</span> <span class="st">".ts"</span>) {</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> result <span class="op">=</span> <span class="cf">await</span> Bun<span class="op">.</span><span class="fu">build</span>({</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>          <span class="dt">entrypoints</span><span class="op">:</span> [filePath]<span class="op">,</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>          <span class="dt">format</span><span class="op">:</span> <span class="st">"esm"</span><span class="op">,</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>        })<span class="op">;</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="op">!</span>result<span class="op">.</span><span class="at">success</span>) {</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>          <span class="cf">return</span> <span class="kw">new</span> <span class="fu">Response</span>(<span class="vs">`Build error: </span><span class="sc">${</span>result<span class="op">.</span><span class="at">logs</span><span class="op">.</span><span class="fu">join</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)<span class="sc">}</span><span class="vs">`</span><span class="op">,</span> { <span class="dt">status</span><span class="op">:</span> <span class="dv">500</span> })<span class="op">;</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> transpiled <span class="op">=</span> <span class="cf">await</span> result<span class="op">.</span><span class="at">outputs</span>[<span class="dv">0</span>]<span class="op">!.</span><span class="fu">text</span>()<span class="op">;</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">new</span> <span class="fu">Response</span>(transpiled<span class="op">,</span> {</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>          <span class="dt">headers</span><span class="op">:</span> { <span class="st">"Content-Type"</span><span class="op">:</span> <span class="st">"application/javascript"</span> }</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>        })<span class="op">;</span></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Serve other file types normally</span></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> contentType <span class="op">=</span> mimeTypes[ext] <span class="op">||</span> <span class="st">"application/octet-stream"</span><span class="op">;</span></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="kw">new</span> <span class="fu">Response</span>(targetFile<span class="op">,</span> {</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>        <span class="dt">headers</span><span class="op">:</span> { <span class="st">"Content-Type"</span><span class="op">:</span> contentType }</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>      })<span class="op">;</span></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">new</span> <span class="fu">Response</span>(<span class="st">"File not found"</span><span class="op">,</span> { <span class="dt">status</span><span class="op">:</span> <span class="dv">404</span> })<span class="op">;</span></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Babylon.js server running at http://localhost:</span><span class="sc">${</span>PORT<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Update package.json to add the workspace feature to bun and add a script for an easy startup.</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"babylonbun26"</span><span class="fu">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"version"</span><span class="fu">:</span> <span class="st">"1.0.0"</span><span class="fu">,</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"private"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"workspaces"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"projects/*"</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"scripts"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"serve"</span><span class="fu">:</span> <span class="st">"bun --hot ./server.ts"</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"dependencies"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"@babylonjs/core"</span><span class="fu">:</span> <span class="st">"^9.13.0"</span><span class="fu">,</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"@babylonjs/havok"</span><span class="fu">:</span> <span class="st">"^1.3.12"</span><span class="fu">,</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"@babylonjs/inspector"</span><span class="fu">:</span> <span class="st">"^9.13.0"</span><span class="fu">,</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"@babylonjs/loaders"</span><span class="fu">:</span> <span class="st">"^9.13.0"</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"devDependencies"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"@types/bun"</span><span class="fu">:</span> <span class="st">"^1.3.14"</span><span class="fu">,</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"typescript"</span><span class="fu">:</span> <span class="st">"^6.0.3"</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Close vscode on the repository and re-open to reboot the container.</p>
+<p>At this point there should be no typescript errors or problems noted in the vscode display.</p>
+<p>Check operation with</p>
+<blockquote class="blockquote">
+<p>bun run serve</p>
+</blockquote>
+<p>also try:</p>
+<blockquote class="blockquote">
+<p>http://localhost:3000/projects/testcard1/</p>
+</blockquote>
+<p>and</p>
+<blockquote class="blockquote">
+<p>http://localhost:3000/projects/testcard2/</p>
+</blockquote>
+<p>Testcart2 appears as:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="testcard2.png" class="img-fluid figure-img"></p>
+<figcaption>testcard2</figcaption>
+</figure>
+</div>
+<section id="check-build" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="check-build"><span class="header-section-number">2.1</span> Check build</h2>
+<p>Testcard1 is already built. To make sure that within this new structure we can build scenes from individual folders testcard 2 can be built following the same process.</p>
+<p>Before you progress make sure that the bun server is closed</p>
+<pre><code>CTRL + c</code></pre>
+<p>Delete index.js and index.html in testcard2/public, those is a copy of the testcard1 build.</p>
+<p>Copy index.html from the testcard2 folder into testcard2/public.</p>
+<p>Rename the title and remove the reference to the HTML base. Point the script to index.js.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!DOCTYPE</span> html<span class="dt">&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="dt">&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">meta</span><span class="ot"> charset</span><span class="op">=</span><span class="st">"UTF-8"</span><span class="dt">&gt;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">title</span><span class="dt">&gt;</span>Testcard 2<span class="dt">&lt;/</span><span class="kw">title</span><span class="dt">&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span> <span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"3d"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span> <span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> type=</span><span class="st">"module"</span><span class="ot"> src</span><span class="op">=</span><span class="st">"./index.js"</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Change directory to testcard2</p>
+<blockquote class="blockquote">
+<p>cd projects/testcard2</p>
+</blockquote>
+<p>Then build from the testcard directory enter:</p>
+<pre><code>bun build index.ts \
+
+--outdir public \
+
+--target browser</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bun build index.ts \</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> --outdir <span class="ex">public</span> <span class="dt">\</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> --target browser</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Bundled</span> 3036 modules in 1814ms</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To preview the build from the testcard2 directory use a bun HTML server.</p>
+<blockquote class="blockquote">
+<p>bunx serve public</p>
+</blockquote>
+<p>The built file is run.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="testcard2built.png" class="img-fluid figure-img"></p>
+<figcaption>built running</figcaption>
+</figure>
+</div>
+</section>
+<section id="update-to-main" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="update-to-main"><span class="header-section-number">2.2</span> Update to main</h2>
+<p>Now the code is at a working stage the changes can be moved added to the main branch.</p>
+<p>First the changes worked on need to be committed with a summary and a description.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="commit.png" class="img-fluid figure-img"></p>
+<figcaption>commit</figcaption>
+</figure>
+</div>
+<p>Push to origin to copy to github.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="push.png" class="img-fluid figure-img"></p>
+<figcaption>push</figcaption>
+</figure>
+</div>
+<p>Re-select the main branch from the current branch tag.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="backtomain.png" class="img-fluid figure-img"></p>
+<figcaption>back to main</figcaption>
+</figure>
+</div>
+<p>Now do a <strong>merge commit</strong> to bring the contents of the development branch into main.</p>
+<p>With the main branch selected choose a branch to merge into main</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="choosemerge.png" class="img-fluid figure-img"></p>
+<figcaption>choose to merge</figcaption>
+</figure>
+</div>
+<p>Select development from the dialogue.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="development.png" class="img-fluid figure-img"></p>
+<figcaption>choose development</figcaption>
+</figure>
+</div>
+<p>Click on “create a merge commit”</p>
+<p>After a successful merge, push origin again and the merged files are now on githug.</p>
+<p>The main and development branches are identical and the next stage of programming can be carried out in the development branch without interupting the flow of the working software.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

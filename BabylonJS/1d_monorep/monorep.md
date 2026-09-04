@@ -1,8 +1,14 @@
+---
+title: Bun Monorepo
+author: Derek Turner
+toc: true
+number-sections: true
+---
 # Monorepo
 
 The folder structure developed and tested for the testcard 3D scene is appropriate to developing a single project.
 
-What is required at the moment is the ability to make several small projects in which the various aspects of BabylonJS cand be tested.  For that purpose the structure of the folder should be changed to a format named Monorepo.  The name is not inuitive!
+What is required at the moment is the ability to make several small projects in which the various aspects of BabylonJS cand be tested.  For that purpose the structure of the folder should be changed to a format named Monorepo.  The name is not intuitive!
 
 At the moment the repository named BabylonJS has a main branch which is operating.  You might want to come back to this in future if you want to develop a single larger BabylonJS project so by adding a branch named single to the repository this state can be preserved and is easy to restore.
 
@@ -50,7 +56,7 @@ The footer in VSCode shows that the docker container is open and that the correc
 
 # Changing structure
 
-The endpoint for this sectgion will be to be able to run two versions of testcard, one with the cube above the sphere and one with the sphere above the cube as evidence that the structure is set up to run multiple small projects.
+The endpoint for this section will be to be able to run two versions of testcard, one with the cube above the sphere and one with the sphere above the cube as evidence that the structure is set up to run multiple small projects.
 
 The structure of the **Monorepo / Multi-project workspace** will move towards
 
@@ -168,12 +174,12 @@ Flip the y position of the sphere and the box so that the box,position y = 1 and
     sphere.position.y = 3;
     return sphere;
   }
-  ```
+```
 
-  Edit server.ts so that it serves by default testcard1 and also defaults to serving index.html if the path ends with /.
+Edit server.ts so that it serves by default testcard1 and also defaults to serving index.html if the path ends with /.
 
-  **server.ts** (extract)
-  ```javascript
+**server.ts** (extract)
+```javascript
 Bun.serve({
   port: PORT,
   async fetch(req) {
